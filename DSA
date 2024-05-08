@@ -1,0 +1,96 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+struct Student {
+ char name[50];
+ int age;
+ int rollNo;
+};
+int compareRollNo(const void *a, const void *b) {
+ return ((struct Student *)a)->rollNo - ((struct Student *)b)->rollNo;
+}
+void addStudent(struct Student *students, int *count) {
+ printf("Enter student name: ");
+ scanf("%s", students[*count].name);
+ printf("Enter student age: ");
+ scanf("%d", &students[*count].age);
+ printf("Enter student roll number: ");
+ scanf("%d", &students[*count].rollNo);
+ (*count)++;
+}
+void displayStudents(struct Student *students, int count) {
+ printf("Students sorted by roll number:\n");
+ printf("Name\t\tAge\t\tRoll No\n");
+ qsort(students, count, sizeof(struct Student), compareRollNo);
+ for (int i = 0; i < count; i++) {
+ printf("%s\t\t%d\t\t%d\n", students[i].name, students[i].age,
+students[i].rollNo);
+ }
+}
+void editStudent(struct Student *students, int count) {
+ int rollNo;
+ printf("Enter the roll number of the student to edit: ");
+ scanf("%d", &rollNo);
+ for (int i = 0; i < count; i++) {
+ if (students[i].rollNo == rollNo) {
+ printf("Enter new student name: ");
+ scanf("%s", students[i].name);
+ printf("Enter new student age: ");
+ scanf("%d", &students[i].age);
+ printf("Student information updated successfully!\n");
+ return;
+ }
+ }
+ printf("Student with roll number %d not found!\n", rollNo);
+}
+void deleteStudent(struct Student *students, int *count) {
+ int rollNo;
+ printf("Enter the roll number of the student to delete: ");
+ scanf("%d", &rollNo);
+ for (int i = 0; i < *count; i++) {
+ if (students[i].rollNo == rollNo) {
+ for (int j = i; j < *count - 1; j++) {
+ students[j] = students[j + 1];
+ }
+ (*count)--;
+ printf("Student deleted successfully!\n");
+ return;
+ }
+ }
+ printf("Student with roll number %d not found!\n", rollNo);
+}
+int main() {
+ struct Student students[100];
+ int count = 0;
+ int choice;
+ do {
+ printf("\nSchool Management System\n");
+ printf("1. Add Student\n");
+ printf("2. View Students\n");
+ printf("3. Edit Student Information\n");
+ printf("4. Delete Student Information\n");
+ printf("5. Exit\n");
+ printf("Enter your choice: ");
+ scanf("%d", &choice);
+ switch(choice) {
+ case 1:
+ addStudent(students, &count);
+ break;
+ case 2:
+ displayStudents(students, count);
+ break;
+ case 3:
+ editStudent(students, count);
+ break;
+ case 4:
+ deleteStudent(students, &count);
+ break;
+ case 5:
+ printf("Exiting the program. Goodbye!\n");
+ exit(0);
+ default:
+ printf("Invalid choice! Please enter a valid option.\n");
+ }
+ } while (choice != 5);
+ return 0;
+}
